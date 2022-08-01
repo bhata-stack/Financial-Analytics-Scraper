@@ -269,16 +269,26 @@
 			<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.5.0/Chart.min.js"></script>
 			<script>
 				var scraped_data = `<%= scraped_data %>`;
-				scraped_data = scraped_data.split(",")
-				scraped_data.reverse()
+				scraped_data = scraped_data.replaceAll('NaN', '0')
+				scraped_data = scraped_data.split(",");
+				scraped_data.reverse();
 				var title = `<%= title_data %>`;
 				var symbol = `<%= symbol %>`;
 				title = symbol + ": " + title;
-				if (typeof scraped_data == "object") {
+				var dates = []
+				for (i = 0; i < scraped_data.length; i++) {
+					dates.push(i);
+				};
+				dates = dates.map(function (point) {
+					return 2022 - point;
+				});
+				dates.reverse();
+				console.log(dates)
+				if (scraped_data.length != 1) {
 					new Chart(document.getElementById("chart"), {
 						type: 'line',
 						data: {
-							labels: [2018, 2019, 2020, 2021],
+							labels: dates,
 							datasets: [{ 
 								data: scraped_data,
 								borderColor: "#3e95cd"

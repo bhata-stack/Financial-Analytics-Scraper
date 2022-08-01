@@ -31,15 +31,15 @@ app.set('port', (process.env.PORT || 8080));
 // Root Route
 
 app.get('/', function (req, res) {
-    res.render('pages/index', {'scraped_data': null});
+    res.render('pages/index', {'symbol': null, 'title_data': null, 'scraped_data': null});
 });
 
 app.get('/index', function (req, res) {
-    res.render('pages/index', {'scraped_data': null});
+    res.render('pages/index', {'symbol': null, 'title_data': null, 'scraped_data': null});
 });
 
 app.get('/index.html', function (req, res) {
-    res.render('pages/index', {'scraped_data': null});
+    res.render('pages/index', {'symbol': null, 'title_data': null, 'scraped_data': null});
 });
 
 function call_scraper(req, res) {
@@ -54,16 +54,20 @@ function call_scraper(req, res) {
 
     PythonShell.run('./python/scraper.py', options, function (err, data) {
         if (err) res.send(err);
-        for (var i = 0; i < data.length; i++) {
-            data[i] = data[i].replace("\r", "");
+        if (data) {
+            for (var i = 0; i < data.length; i++) {
+                data[i] = data[i].replace("\r", "");
+            }
+            scraped_data = data.slice(1);
+            title_data = data[0];
+            scraped_data.forEach(function (point, index) {
+                scraped_data[index] = parseFloat(point);
+            })
+            console.log(scraped_data, title_data)
+            res.render('pages/index', {'symbol': req.body.symbol, 'title_data': title_data, 'scraped_data': scraped_data});
+        } else {
+            res.render('pages/index', {'symbol': null, 'title_data': null, 'scraped_data': null})
         }
-        scraped_data = data.slice(1);
-        title_data = data[0];
-        scraped_data.forEach(function (point, index) {
-            scraped_data[index] = parseFloat(point);
-        })
-        console.log(scraped_data, title_data)
-        res.render('pages/index', {'symbol': req.body.symbol, 'title_data': title_data, 'scraped_data': scraped_data});
     });
 }
 
