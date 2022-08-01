@@ -69,14 +69,6 @@ function call_scraper(req, res) {
 
 app.post('/get-data', call_scraper);
 
-/*
-app.get('/imposter.pdf', function (req, res) {
-    var data = fs.readFileSync(__dirname + '/public/assets/colloquiums/imposter.pdf');
-    res.contentType('application/pdf')
-    res.send(data);
-});
-*/
-
 app.listen(process.env.PORT || 8080, function () { 
     console.log("Server is running on", (process.env.PORT || 8080))
 });
